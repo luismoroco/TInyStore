@@ -1,9 +1,5 @@
-import express from 'express';
+import serverSingleton from './patterns/server.Singleton';
 
-const app = express();
+const port = 3000;
 
-app.get('/', (_, res) => {
-  res.json({ message: 'HELLO WORLD' });
-});
-
-app.listen(3000, () => console.log('GOD 6000'));
+serverSingleton.start(port);
