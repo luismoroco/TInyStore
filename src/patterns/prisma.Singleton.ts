@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 class PrismaSingleton {
   private static instance: PrismaSingleton;
-  public client: unknown;
+  public client: PrismaClient;
 
   private constructor() {
     this.client = new PrismaClient();
