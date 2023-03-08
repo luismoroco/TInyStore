@@ -6,7 +6,7 @@ dotenv.config();
 
 const port = process.env.APP_PORT ?? 5000;
 
-(() => {
+(async () => {
   try {
     serverSingleton.start(port as number);
   } catch (error) {

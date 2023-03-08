@@ -3,6 +3,7 @@ services:
   postgres:
     image: postgres:10.3
     restart: always
+    env_file: .env
     environment:
       - POSTGRES_USER=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
