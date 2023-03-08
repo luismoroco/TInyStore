@@ -1,5 +1,5 @@
 import express, { Application, urlencoded } from 'express';
-import root from '../routes/auth';
+import root from '../routes/main';
 import { json } from 'body-parser';
 import morgan from 'morgan';
 
