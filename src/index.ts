@@ -6,9 +6,11 @@ dotenv.config();
 
 const port = process.env.APP_PORT ?? 5000;
 
-try {
-  serverSingleton.start(port as number);
-} catch (error) {
-  console.log(httpStatus.INTERNAL_SERVER_ERROR.toString());
-  process.exit(1);
-}
+(() => {
+  try {
+    serverSingleton.start(port as number);
+  } catch (error) {
+    console.log(httpStatus.INTERNAL_SERVER_ERROR.toString());
+    process.exit(1);
+  }
+})();
