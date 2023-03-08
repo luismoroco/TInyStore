@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "sourceMap": true,
+    "target": "es2016",
+    "module": "commonjs",
+    "outDir": "build",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "allowJs": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "lib": ["esnext"],
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "build", ".vscode"]
+}

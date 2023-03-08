@@ -1,0 +1,43 @@
+{
+  "name": "ravn-challenge-v2-luisangelmoroco",
+  "version": "1.0.0",
+  "description": "This is an online store repository built with PostgreSQL and Prisma as the database layer, Express, Typescript and REST. This repository represents a challenge for a Node.js developer trainee position.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix",
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "start": "node build/index.js",
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn --ignore-watch node_modules ./src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luismoroco/luismoroco-Ravn-Challenge-V2-LuisAngelMoroco.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/luismoroco/luismoroco-Ravn-Challenge-V2-LuisAngelMoroco/issues"
+  },
+  "homepage": "https://github.com/luismoroco/luismoroco-Ravn-Challenge-V2-LuisAngelMoroco#readme",
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.14.6",
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.54.1",
+    "conventional-changelog-cli": "^2.2.2",
+    "eslint": "^8.35.0",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.4",
+    "prisma": "^4.11.0",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
