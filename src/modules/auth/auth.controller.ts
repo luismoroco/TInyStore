@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import prismaInstance from '../../patterns/prisma.Singleton';
 import { generateToken } from '../../utils/tokens';
+import jwt from 'jsonwebtoken';
 
 export const signUp = async (req: Request, res: Response) => {
   const { body } = req;
@@ -59,6 +60,23 @@ export const profile = async (req: Request, res: Response) => {
   }
 };
 
-export const signOut = (_: Request, res: Response) => {
-  res.send('Bye');
+export const signOut = (req: Request, res: Response) => {
+  const authToken = req.headers['auth-token'] as string;
+  console.log(authToken);
+
+  try {
+    jwt.sign(
+      authToken,
+      process.env.JWT_SECRETE_KEY ?? 'ML/AI',
+      { expiresIn: 1 },
+      (isLogout, _error) => {
+        if (isLogout) {
+          res.status(200).send({ msg: 'You have been Logout!' });
+          return;
+        }
+      }
+    );
+  } catch (error) {
+    res.status(404).json({ msg: `Error en signOut!` });
+  }
 };

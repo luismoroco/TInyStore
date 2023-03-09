@@ -10,12 +10,12 @@ import { validateToken } from '../utils/validateToken';
 const router: Router = Router();
 
 router.get('/', (_, res) => {
-  res.send('GOD');
+  res.status(200).send('index');
 });
 
 router.post('/signup', signUp);
 router.post('/signin', signIn);
 router.get('/profile', validateToken, profile);
-router.put('/signout', signOut);
+router.put('/signout', validateToken, signOut);
 
 export default router;
