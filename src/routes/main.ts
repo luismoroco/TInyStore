@@ -26,6 +26,7 @@ import {
   getMyOwnCarDescription,
   updateItemFromCart,
 } from '../modules/cart/cart.controller';
+import { setLike } from '../modules/like/like.controller';
 
 const router: Router = Router();
 
@@ -64,5 +65,7 @@ router.delete(
 );
 router.put('/cart/:id', validateToken, authenticateClient, updateItemFromCart);
 router.get('/cart', validateToken, authenticateClient, getMyOwnCarDescription);
+
+router.post('/like/:id', validateToken, authenticateClient, setLike);
 
 export default router;
