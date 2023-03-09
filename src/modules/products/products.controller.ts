@@ -190,6 +190,7 @@ export const searchByCategory = async (req: Request, res: Response) => {
   }
 };
 
+// falta
 export const getProductDetails = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -204,5 +205,31 @@ export const getProductDetails = async (req: Request, res: Response) => {
     }
   } catch (error) {
     res.status(500).json({ msg: 'Error in getProductsDetailed' });
+  }
+};
+
+export const uploadImages = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const exist = prismaInstance.client.product.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!exist) {
+      res.status(400).json({ msg: 'Product Id does NOT EXIST!' });
+      return;
+    }
+
+    const url = req.file?.path as string;
+    const newImage = await prismaInstance.client.productImage.create({
+      data: {
+        url,
+        productId: Number(id),
+      },
+    });
+    res.status(200).json(newImage);
+  } catch (error) {
+    res.status(500).json({ msg: 'Error in uploadImages' });
   }
 };

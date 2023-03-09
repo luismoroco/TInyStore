@@ -2,6 +2,7 @@ import express, { Application, urlencoded } from 'express';
 import root from '../routes/main';
 import { json } from 'body-parser';
 import morgan from 'morgan';
+import path from 'path';
 
 class ServerSingleton {
   private static instance: ServerSingleton;
@@ -13,6 +14,7 @@ class ServerSingleton {
     this.app.use(morgan('dev'));
     this.app.use(root);
     this.app.use(urlencoded({ extended: true }));
+    this.app.use('/uploads', express.static(path.resolve('uploads')));
   }
 
   public static getInstance(): ServerSingleton {
