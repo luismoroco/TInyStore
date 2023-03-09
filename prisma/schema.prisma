@@ -15,9 +15,10 @@ model User {
   email     String    @unique
   password  String
   role      UserRole  @default(CLIENT)
-  createdAt DateTime  @default(now()) @map("createdAt")
-  updatedAt DateTime  @map("updatedAt")
   products  Product[]
+  orders    Order[]
+  Cart      Cart[]
+  Like      Like[]
 
   @@map("users")
 }
@@ -27,58 +28,94 @@ enum UserRole {
   CLIENT
 }
 
-model category {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  description String
-  Product     Product[]
-
-  @@map("categorys")
-}
-
 model Product {
-  id          Int      @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
   description String
+  category    String
   price       Float
   stock       Int
-  disabled    Boolean
-  category    category @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-
-  User   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  disabled    Boolean        @default(false)
+  images      ProductImage[]
+  createdBy   User?          @relation(fields: [createdById], references: [id])
+  createdById Int?
+  Order       Order[]
+  Cart        Cart[]
+  Like        Like[]
 
   @@map("products")
 }
 
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  url       String
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("imgproducto")
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+
+  @@map("orders")
+}
+
+model Cart {
+  id        Int     @id @default(autoincrement())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int
+
+  @@map("cart")
+}
+
+model Like {
+  id        Int     @id @default(autoincrement())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@map("likes")
+}
+
 model Notification {
-  id          Int          @id @default(autoincrement())
-  userId      Int
-  productId   Int
-  likedAt     DateTime
-  sentAt      DateTime
-  message     String
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  likedAt   DateTime
+  sentAt    DateTime
+  message   String
 
   @@map("notifications")
 }
 
 model PasswordResetToken {
-  id          Int          @id @default(autoincrement())
-  userId      Int
-  token       String
-  createdAt   DateTime
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String
+  createdAt DateTime
 
   @@map("passtoken")
 }
 
 model Email {
-  id          Int          @id @default(autoincrement())
-  recipient   String
-  sender      String
-  subject     String
-  body        String
-  createdAt   DateTime     @default(now())
+  id        Int      @id @default(autoincrement())
+  recipient String
+  sender    String
+  subject   String
+  body      String
+  createdAt DateTime @default(now())
 
   @@map("mails")
 }
