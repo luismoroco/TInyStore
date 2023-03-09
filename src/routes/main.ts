@@ -30,6 +30,31 @@ import { setLike } from '../modules/like/like.controller';
 
 const router: Router = Router();
 
+/**
+ * Post track
+ * @openapi
+ * /signup:
+ *   post:
+ *     tags:
+ *       -users
+ *     summary: xd
+ *     description: chupetin
+ *     requestBody:
+ *        content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/componentes/schemas/user"
+ *     responses:
+ *       '200':
+ *         description: xd
+ *       '422':
+ *         description: xd
+ *     security:
+ *       - bearerAuth: []
+ *
+ *      F :(
+ */
+
 router.get('/', (_, res) => {
   res.status(200).send('index');
 });

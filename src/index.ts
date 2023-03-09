@@ -6,10 +6,6 @@ dotenv.config();
 
 const port = process.env.APP_PORT ?? 4000;
 
-//Function identity<T>(arg: T): T {
-//  return arg;
-//}
-
 (async () => {
   try {
     serverSingleton.start(port as number);

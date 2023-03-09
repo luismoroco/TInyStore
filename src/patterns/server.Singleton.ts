@@ -1,4 +1,6 @@
 import express, { Application, urlencoded } from 'express';
+import swaggerUi from 'swagger-ui-express';
+import swagger from '../docs/swagger';
 import root from '../routes/main';
 import { json } from 'body-parser';
 import morgan from 'morgan';
@@ -15,6 +17,7 @@ class ServerSingleton {
     this.app.use(root);
     this.app.use(urlencoded({ extended: true }));
     this.app.use('/uploads', express.static(path.resolve('uploads')));
+    this.app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swagger));
   }
 
   public static getInstance(): ServerSingleton {
