@@ -14,10 +14,18 @@ import {
   getProductosPerPage,
   searchByCategory,
   uploadImages,
+  getProductDetails,
 } from '../modules/products/products.controller';
 import { validateToken } from '../utils/validateToken';
 import { authenticateAdmin } from '../modules/products/middleware';
 import multer from '../utils/multer.config';
+import { authenticateClient } from '../modules/cart/middleware';
+import {
+  addProductToCart,
+  deleteItemFromCart,
+  getMyOwnCarDescription,
+  updateItemFromCart,
+} from '../modules/cart/cart.controller';
 
 const router: Router = Router();
 
@@ -35,10 +43,26 @@ router.post('/cate', validateToken, authenticateAdmin, addCategory);
 router.put('/pro/:id', validateToken, authenticateAdmin, updateProducto);
 router.delete('/pro/:id', validateToken, authenticateAdmin, deleteProducto);
 router.put('/dis/:id', validateToken, authenticateAdmin, disableProducto);
+router.post(
+  '/upfile/:id',
+  validateToken,
+  authenticateAdmin,
+  multer.single('image'),
+  uploadImages
+);
 
 router.get('/productos', getProductosPerPage);
 router.get('/productos/:id', searchByCategory);
+router.get('/productos/detail/:id', getProductDetails);
 
-router.get('/upfile/:id', multer.single('image'), uploadImages);
+router.post('/cart', validateToken, authenticateClient, addProductToCart);
+router.delete(
+  '/cart/:id',
+  validateToken,
+  authenticateClient,
+  deleteItemFromCart
+);
+router.put('/cart/:id', validateToken, authenticateClient, updateItemFromCart);
+router.get('/cart', validateToken, authenticateClient, getMyOwnCarDescription);
 
 export default router;

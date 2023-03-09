@@ -190,19 +190,25 @@ export const searchByCategory = async (req: Request, res: Response) => {
   }
 };
 
-// falta
 export const getProductDetails = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const exist = prismaInstance.client.product.findUnique({
+    const data = await prismaInstance.client.product.findUnique({
       where: { id: Number(id) },
     });
 
-    if (!exist) {
+    if (!data) {
       res.status(400).json({ msg: 'Product Id does NOT EXIST!' });
       return;
     }
+
+    const imgBelong = await prismaInstance.client.productImage.findMany({
+      where: {
+        productId: Number(id),
+      },
+    });
+    res.status(200).json({ data, imgBelong });
   } catch (error) {
     res.status(500).json({ msg: 'Error in getProductsDetailed' });
   }
