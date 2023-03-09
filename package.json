@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/luismoroco/luismoroco-Ravn-Challenge-V2-LuisAngelMoroco#readme",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/morgan": "^1.9.4",
@@ -41,6 +42,7 @@
   },
   "dependencies": {
     "@prisma/client": "^4.11.0",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
