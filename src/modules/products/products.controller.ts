@@ -123,3 +123,86 @@ export const disableProducto = async (req: Request, res: Response) => {
     res.status(404).json({ msg: 'Error in disableProducto' });
   }
 };
+
+export const getProductosPerPage = async (req: Request, res: Response) => {
+  try {
+    const page = Number(req.query.page) || 1;
+    const pageSize = Number(req.query.pageSize) || 5;
+
+    const totalCount = await prismaInstance.client.product.count();
+    const totalPages = Math.ceil(totalCount / pageSize);
+    const offset = (page - 1) * pageSize;
+
+    const data = await prismaInstance.client.product.findMany({
+      take: pageSize,
+      skip: offset,
+    });
+
+    res.status(200).json({
+      data,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (error) {
+    res.status(500).json({ msg: 'Error in getProductos' });
+  }
+};
+
+export const searchByCategory = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const existCategory = await prismaInstance.client.category.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!existCategory) {
+      res.status(400).json({ msg: `Category doensn't exist!` });
+      return;
+    }
+
+    const page = Number(req.query.page) || 1;
+    const pageSize = Number(req.query.pageSize) || 5;
+
+    const totalCount = await prismaInstance.client.product.count({
+      where: {
+        categoryId: Number(id),
+      },
+    });
+    const totalPages = Math.ceil(totalCount / pageSize);
+    const offset = (page - 1) * pageSize;
+
+    const data = await prismaInstance.client.product.findMany({
+      take: pageSize,
+      skip: offset,
+      where: {
+        categoryId: Number(id),
+      },
+    });
+
+    res.status(200).json({
+      data,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (error) {
+    res.status(500).json({ msg: 'Error in searchByCategory' });
+  }
+};
+
+export const getProductDetails = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const exist = prismaInstance.client.product.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!exist) {
+      res.status(400).json({ msg: 'Product Id does NOT EXIST!' });
+      return;
+    }
+  } catch (error) {
+    res.status(500).json({ msg: 'Error in getProductsDetailed' });
+  }
+};

@@ -11,6 +11,8 @@ import {
   updateProducto,
   deleteProducto,
   disableProducto,
+  getProductosPerPage,
+  searchByCategory,
 } from '../modules/products/products.controller';
 import { validateToken } from '../utils/validateToken';
 import { authenticateAdmin } from '../modules/products/middleware';
@@ -31,5 +33,8 @@ router.post('/cate', validateToken, authenticateAdmin, addCategory);
 router.put('/pro/:id', validateToken, authenticateAdmin, updateProducto);
 router.delete('/pro/:id', validateToken, authenticateAdmin, deleteProducto);
 router.put('/dis/:id', validateToken, authenticateAdmin, disableProducto);
+
+router.get('/productos', getProductosPerPage);
+router.get('/productos/:id', searchByCategory);
 
 export default router;
