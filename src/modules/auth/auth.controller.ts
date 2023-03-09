@@ -6,7 +6,7 @@ export const signUp = async (req: Request, res: Response) => {
   const { body } = req;
 
   try {
-    const newUser = await prismaInstance.client.post.create({
+    const newUser = await prismaInstance.client.user.create({
       data: { ...body },
     });
 

@@ -103,12 +103,6 @@ CREATE TABLE "mails" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_firstname_key" ON "users"("firstname");
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_lastname_key" ON "users"("lastname");
-
--- CreateIndex
 CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 
 -- CreateIndex
