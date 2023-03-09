@@ -9,12 +9,13 @@ export const validateToken = (
 ) => {
   const token = req.header('auth-token');
   if (!token) {
-    res.status(401).json(`Access Denied! Invalid Token`);
+    res.status(401).json(`Access Denied! GET a Token`);
     return;
   }
 
-  const payload = verifyToken(token || '0x7') as IPayload;
-  req.userIdentify = payload.id;
+  const { role, id } = verifyToken(token || '0x7') as IPayload;
+  req.userIdentify = id;
+  req.role = role;
 
   next();
 };

@@ -8,17 +8,19 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  firstname String    
-  lastname  String    
-  username  String    @unique
-  email     String    @unique
-  password  String
-  role      UserRole  @default(CLIENT)
-  products  Product[]
-  orders    Order[]
-  Cart      Cart[]
-  Like      Like[]
+  id                  Int                  @id @default(autoincrement())
+  firstname           String
+  lastname            String
+  username            String               @unique
+  email               String               @unique
+  password            String
+  role                UserRole             @default(CLIENT)
+  products            Product[]
+  orders              Order[]
+  Cart                Cart[]
+  Like                Like[]
+  notifications       Notification[]
+  passwordResetTokens PasswordResetToken[]
 
   @@map("users")
 }
@@ -26,6 +28,13 @@ model User {
 enum UserRole {
   MANAGER
   CLIENT
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String
+  products    Product[]
 }
 
 model Product {
@@ -42,6 +51,8 @@ model Product {
   Order       Order[]
   Cart        Cart[]
   Like        Like[]
+  Category    Category?      @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
 
   @@map("products")
 }
@@ -96,6 +107,7 @@ model Notification {
   likedAt   DateTime
   sentAt    DateTime
   message   String
+  User      User     @relation(fields: [userId], references: [id])
 
   @@map("notifications")
 }
@@ -105,6 +117,7 @@ model PasswordResetToken {
   userId    Int
   token     String
   createdAt DateTime
+  User      User     @relation(fields: [userId], references: [id])
 
   @@map("passtoken")
 }

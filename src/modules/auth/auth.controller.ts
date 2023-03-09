@@ -11,7 +11,7 @@ export const signUp = async (req: Request, res: Response) => {
       data: { ...body },
     });
 
-    const token: string = generateToken(newUser.id);
+    const token: string = generateToken(newUser.id, newUser.role);
     res.status(200).header('auth-header', token).json(newUser);
   } catch (error) {
     res.status(404).json({ msg: `Error in SignUp` });
@@ -36,7 +36,7 @@ export const signIn = async (req: Request, res: Response) => {
       return;
     }
 
-    const token: string = generateToken(isFound?.id || 0x6);
+    const token: string = generateToken(isFound?.id || 0x6, isFound?.role);
     res.status(200).header('auth-token', token).json(isFound);
   } catch (error) {
     res.status(404).json({ msg: `Error in SignIn` });
