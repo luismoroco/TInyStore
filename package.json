@@ -9,7 +9,8 @@
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "start": "npm run build && node build/index.js",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn --ignore-watch node_modules ./src/index.ts"
+    "dev": "ts-node-dev --respawn --ignore-watch node_modules ./src/index.ts",
+    "deploy": "npx prisma init && npx prisma migrate dev --name production"
   },
   "repository": {
     "type": "git",
