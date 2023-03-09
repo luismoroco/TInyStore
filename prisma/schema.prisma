@@ -18,6 +18,8 @@ model User {
   createdAt DateTime  @default(now()) @map("createdAt")
   updatedAt DateTime  @map("updatedAt")
   products  Product[]
+
+  @@map("users")
 }
 
 enum UserRole {
@@ -30,6 +32,8 @@ model category {
   name        String    @unique
   description String
   Product     Product[]
+
+  @@map("categorys")
 }
 
 model Product {
@@ -44,6 +48,8 @@ model Product {
 
   User   User? @relation(fields: [userId], references: [id])
   userId Int?
+
+  @@map("products")
 }
 
 model Notification {
@@ -53,6 +59,8 @@ model Notification {
   likedAt     DateTime
   sentAt      DateTime
   message     String
+
+  @@map("notifications")
 }
 
 model PasswordResetToken {
@@ -60,6 +68,8 @@ model PasswordResetToken {
   userId      Int
   token       String
   createdAt   DateTime
+
+  @@map("passtoken")
 }
 
 model Email {
@@ -69,4 +79,6 @@ model Email {
   subject     String
   body        String
   createdAt   DateTime     @default(now())
+
+  @@map("mails")
 }
