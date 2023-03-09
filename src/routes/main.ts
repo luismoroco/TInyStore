@@ -8,6 +8,9 @@ import {
 import {
   createProducto,
   addCategory,
+  updateProducto,
+  deleteProducto,
+  disableProducto,
 } from '../modules/products/products.controller';
 import { validateToken } from '../utils/validateToken';
 import { authenticateAdmin } from '../modules/products/middleware';
@@ -23,7 +26,10 @@ router.post('/signin', signIn);
 router.get('/profile', validateToken, profile);
 router.put('/signout', validateToken, signOut);
 
-router.post('/products', validateToken, authenticateAdmin, createProducto);
-router.post('/categories/:id', authenticateAdmin, addCategory);
+router.post('/pro/:id', validateToken, authenticateAdmin, createProducto);
+router.post('/cate', validateToken, authenticateAdmin, addCategory);
+router.put('/pro/:id', validateToken, authenticateAdmin, updateProducto);
+router.delete('/pro/:id', validateToken, authenticateAdmin, deleteProducto);
+router.put('/dis/:id', validateToken, authenticateAdmin, disableProducto);
 
 export default router;
