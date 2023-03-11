@@ -25,9 +25,7 @@ export const deleteItemFromCart = async (req: Request, res: Response) => {
   try {
     const existItem = await findUniqueCart(Number(id));
     if (!existItem) {
-      res
-        .status(httpStatus.NO_CONTENT)
-        .json({ msg: 'Product Id in cart NOT EXIST!' });
+      res.status(httpStatus.OK).json({ msg: 'Product Id in cart NOT EXIST!' });
       return;
     }
 
@@ -52,9 +50,7 @@ export const updateItemFromCart = async (req: Request, res: Response) => {
   try {
     const exist = await findUniqueCart(Number(id));
     if (!exist) {
-      res
-        .status(httpStatus.NO_CONTENT)
-        .json({ msg: 'Product Id in cart NOT EXIST!' });
+      res.status(httpStatus.OK).json({ msg: 'Product Id in cart NOT EXIST!' });
       return;
     }
 

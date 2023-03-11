@@ -4,7 +4,6 @@ import {
   cartInstance,
   categoryInstance,
   findUniqueCategory,
-  findUniqueOrder,
   findUniqueProduct,
   likeInstance,
   mailInstance,
@@ -24,7 +23,7 @@ export const addCategory = async (req: Request, res: Response) => {
 
     if (!newCategory) {
       res
-        .status(httpStatus.NO_CONTENT)
+        .status(httpStatus.OK)
         .json({ msg: `Category ${body.category} exist!` });
       return;
     }
@@ -44,9 +43,7 @@ export const createProducto = async (req: Request, res: Response) => {
   try {
     const existCategory = await findUniqueCategory(Number(id));
     if (!existCategory) {
-      res
-        .status(httpStatus.NO_CONTENT)
-        .json({ msg: `Category doensn't exist!` });
+      res.status(httpStatus.OK).json({ msg: `Category doensn't exist!` });
       return;
     }
 
@@ -72,9 +69,7 @@ export const updateProducto = async (req: Request, res: Response) => {
   try {
     const exist = await findUniqueProduct(Number(id));
     if (!exist) {
-      res
-        .status(httpStatus.NO_CONTENT)
-        .json({ msg: 'The product does not existe' });
+      res.status(httpStatus.OK).json({ msg: 'The product does not existe' });
       return;
     }
 
@@ -319,7 +314,7 @@ export const buyProducts = async (req: Request, res: Response) => {
     });
 
     if (!cartItems || cartItems.length === 0) {
-      res.status(httpStatus.NO_CONTENT).json('Yout cart is EMPTY!');
+      res.status(httpStatus.OK).json('Yout cart is EMPTY!');
       return;
     }
 
@@ -403,7 +398,7 @@ export const getAllTheOrders = async (_: Request, res: Response) => {
     });
 
     if (!orders) {
-      res.status(httpStatus.NO_CONTENT).json('The are NOT orders yet!');
+      res.status(httpStatus.OK).json('The are NOT orders yet!');
       return;
     }
 
@@ -419,13 +414,19 @@ export const getMyOrder = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const exist = findUniqueOrder(Number(id));
-    if (!exist) {
+    const orders = await orderInstance.findMany({
+      where: { userId: Number(id) },
+    });
+
+    if (!orders || orders.length === 0) {
+      console.log('RAA');
       res
-        .status(httpStatus.NO_CONTENT)
-        .json('The are NOT orders yet or the id NOT exist!');
+        .status(httpStatus.OK)
+        .json({ msg: 'The are NOT orders yet or the id USER NOT exist!' });
       return;
     }
+
+    res.status(httpStatus.OK).json(orders);
   } catch (error) {
     res
       .status(httpStatus.SERVICE_UNAVAILABLE)

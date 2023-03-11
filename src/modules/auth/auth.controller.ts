@@ -29,7 +29,7 @@ export const signIn = async (req: Request, res: Response) => {
 
     if (!isFound) {
       res
-        .status(httpStatus.NO_CONTENT)
+        .status(httpStatus.OK)
         .json({ msg: `User ${body.email} doesn't exist` });
       return;
     }
@@ -50,7 +50,7 @@ export const profile = async (req: Request, res: Response) => {
   try {
     const authUser = await findUniqueUser(req.userIdentify);
     if (!authUser) {
-      res.status(httpStatus.NO_CONTENT).json(`User not exist!`);
+      res.status(httpStatus.OK).json(`User not exist!`);
       return;
     }
 

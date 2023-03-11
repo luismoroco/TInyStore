@@ -3,6 +3,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
+import httpStatus from 'http-status';
 
 export const authenticateAdmin = (
   req: Request,
@@ -10,7 +11,7 @@ export const authenticateAdmin = (
   next: NextFunction
 ) => {
   if (req.role === 'CLIENT') {
-    res.status(401).json('Access Denied! Manager ONLY!');
+    res.status(httpStatus.UNAUTHORIZED).json('Access Denied! Manager ONLY!');
     return;
   }
 
