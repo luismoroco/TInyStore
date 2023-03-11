@@ -4,11 +4,12 @@ import {
   categoryInstance,
   findUniqueCategory,
   findUniqueProduct,
+  likeInstance,
+  mailInstance,
   orderInstance,
   productImgInstance,
   productInstance,
 } from '../../utils/lib';
-import { sendTheNotify } from '../services/mail';
 
 export const addCategory = async (req: Request, res: Response) => {
   const { body } = req;
@@ -228,6 +229,42 @@ export const uploadImages = async (req: Request, res: Response) => {
   }
 };
 
+export const verifyIfThereLikes = async (
+  avaibleCount: number,
+  namePro: string,
+  idP: number
+) => {
+  const userPutLikeToProduct = await likeInstance.findFirst({
+    where: {
+      productId: idP,
+    },
+    orderBy: {
+      id: 'desc',
+    },
+    include: {
+      user: {
+        select: {
+          firstname: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  if (!userPutLikeToProduct) {
+    return;
+  }
+
+  await mailInstance.create({
+    data: {
+      recipient: userPutLikeToProduct.user.email,
+      sender: process.env.MAILER_USER || 'TINY STORE',
+      subject: 'Notify',
+      body: `Hi, ${userPutLikeToProduct.user.firstname}. There are only ${avaibleCount} units left of the ${namePro}!!`,
+    },
+  });
+};
+
 export const buyProducts = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -263,7 +300,7 @@ export const buyProducts = async (req: Request, res: Response) => {
         res
           .status(400)
           .json(
-            `There isn't stock for buy ${item.quantity} of ${item.product.name}`
+            `There isn't stock for buy ${item.quantity} of ${item.product.name} OR is disabled`
           );
         return;
       }
@@ -278,7 +315,7 @@ export const buyProducts = async (req: Request, res: Response) => {
     }
 
     for (const item of cartItems) {
-      await productInstance.update({
+      const upItem = await productInstance.update({
         where: {
           id: item.productId,
         },
@@ -287,7 +324,9 @@ export const buyProducts = async (req: Request, res: Response) => {
         },
       });
 
-      //if (upItem.stock <= 3)
+      if (upItem.stock <= 3) {
+        verifyIfThereLikes(upItem.stock, upItem.name, upItem.id);
+      }
     }
 
     await cartInstance.deleteMany({
@@ -301,13 +340,8 @@ export const buyProducts = async (req: Request, res: Response) => {
       skipDuplicates: true,
     });
 
-    res.status(200).json({ msg: 'OK', total: `TOTAL: ${total}`, order });
+    res.status(200).json({ msg: 'OK', total: `TOTAL: ${total}`, order, data });
   } catch (error) {
     res.status(500).json({ msg: 'Error in buyProducts' });
   }
-};
-
-export const sendMail = async (_req: Request, res: Response) => {
-  sendTheNotify('lmorocoramos@gmail.com');
-  res.json('TODO GOD');
 };
