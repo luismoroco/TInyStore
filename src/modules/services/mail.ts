@@ -26,7 +26,6 @@ export const sendTheMails = async () => {
     return;
   }
 
-  console.log(mailsForSend);
   for (const item of mailsForSend) {
     sendTheNotify(item.recipient, item.body);
 
