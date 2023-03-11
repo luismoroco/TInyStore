@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import prismaInstance from '../../patterns/prisma.Singleton';
+import { cartInstance, findUniqueCart } from '../../utils/lib';
 
 export const addProductToCart = async (req: Request, res: Response) => {
   const { body } = req;
 
   try {
     body.userId = req.userIdentify as number;
-    const newItem = await prismaInstance.client.cart.create({
+    const newItem = await cartInstance.create({
       data: { ...body },
     });
 
@@ -20,16 +20,13 @@ export const deleteItemFromCart = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const existItem = prismaInstance.client.cart.findUnique({
-      where: { id: Number(id) },
-    });
-
+    const existItem = await findUniqueCart(Number(id));
     if (!existItem) {
       res.status(400).json({ msg: 'Product Id in cart NOT EXIST!' });
       return;
     }
 
-    await prismaInstance.client.cart.delete({
+    await cartInstance.delete({
       where: {
         id: Number(id),
       },
@@ -46,16 +43,13 @@ export const updateItemFromCart = async (req: Request, res: Response) => {
   const { body } = req;
 
   try {
-    const exist = prismaInstance.client.cart.findUnique({
-      where: { id: Number(id) },
-    });
-
+    const exist = await findUniqueCart(Number(id));
     if (!exist) {
       res.status(400).json({ msg: 'Product Id in cart NOT EXIST!' });
       return;
     }
 
-    const itemUpdted = await prismaInstance.client.cart.update({
+    const itemUpdted = await cartInstance.update({
       where: { id: Number(id) },
       data: { ...body },
     });
@@ -70,7 +64,7 @@ export const getMyOwnCarDescription = async (req: Request, res: Response) => {
   const id = req.userIdentify as number;
 
   try {
-    const myCart = await prismaInstance.client.cart.findMany({
+    const myCart = await cartInstance.findMany({
       where: {
         userId: id,
       },

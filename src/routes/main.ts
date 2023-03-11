@@ -44,13 +44,7 @@ router.post('/cate', validateToken, authenticateAdmin, addCategory);
 router.put('/pro/:id', validateToken, authenticateAdmin, updateProducto);
 router.delete('/pro/:id', validateToken, authenticateAdmin, deleteProducto);
 router.put('/dis/:id', validateToken, authenticateAdmin, disableProducto);
-router.post(
-  '/upfile/:id',
-  validateToken,
-  authenticateAdmin,
-  multer.single('image'),
-  uploadImages
-);
+router.post('/upfile/:id', multer.single('image'), uploadImages);
 
 router.get('/productos', getProductosPerPage);
 router.get('/productos/:id', searchByCategory);

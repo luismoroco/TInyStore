@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import prismaInstance from '../../patterns/prisma.Singleton';
 import { generateToken } from '../../utils/tokens';
+import { findUniqueUser, userInstance } from '../../utils/lib';
 import jwt from 'jsonwebtoken';
 
 export const signUp = async (req: Request, res: Response) => {
   const { body } = req;
 
   try {
-    const newUser = await prismaInstance.client.user.create({
+    const newUser = await userInstance.create({
       data: { ...body },
     });
 
@@ -22,7 +22,7 @@ export const signIn = async (req: Request, res: Response) => {
   const { body } = req;
 
   try {
-    const isFound = await prismaInstance.client.user.findUnique({
+    const isFound = await userInstance.findUnique({
       where: { email: body.email },
     });
 
@@ -45,10 +45,7 @@ export const signIn = async (req: Request, res: Response) => {
 
 export const profile = async (req: Request, res: Response) => {
   try {
-    const authUser = await prismaInstance.client.user.findUnique({
-      where: { id: req.userIdentify },
-    });
-
+    const authUser = await findUniqueUser(req.userIdentify);
     if (!authUser) {
       res.status(400).json(`User not exist!`);
       return;

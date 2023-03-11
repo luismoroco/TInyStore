@@ -1,11 +1,17 @@
 import { Request, Response } from 'express';
-import prismaInstance from '../../patterns/prisma.Singleton';
+import {
+  categoryInstance,
+  findUniqueCategory,
+  findUniqueProduct,
+  productImgInstance,
+  productInstance,
+} from '../../utils/lib';
 
 export const addCategory = async (req: Request, res: Response) => {
   const { body } = req;
 
   try {
-    const newCategory = await prismaInstance.client.category.create({
+    const newCategory = await categoryInstance.create({
       data: { ...body },
     });
 
@@ -27,10 +33,7 @@ export const createProducto = async (req: Request, res: Response) => {
   const { body } = req;
 
   try {
-    const existCategory = await prismaInstance.client.category.findUnique({
-      where: { id: Number(id) },
-    });
-
+    const existCategory = await findUniqueCategory(Number(id));
     if (!existCategory) {
       res.status(400).json({ msg: `Category doensn't exist!` });
       return;
@@ -39,7 +42,7 @@ export const createProducto = async (req: Request, res: Response) => {
     body.createdById = req.userIdentify as number;
     body.categoryId = Number(id);
     body.category = existCategory?.name as string;
-    const newProduct = await prismaInstance.client.product.create({
+    const newProduct = await productInstance.create({
       data: { ...body },
     });
 
@@ -54,16 +57,13 @@ export const updateProducto = async (req: Request, res: Response) => {
   const { body } = req;
 
   try {
-    const exist = await prismaInstance.client.product.findUnique({
-      where: { id: Number(id) },
-    });
-
+    const exist = await findUniqueProduct(Number(id));
     if (!exist) {
       res.status(400).json({ msg: 'The product does not existe' });
       return;
     }
 
-    const updateUser = await prismaInstance.client.product.update({
+    const updateUser = await productInstance.update({
       where: { id: exist.id },
       data: { ...body },
     });
@@ -77,16 +77,13 @@ export const updateProducto = async (req: Request, res: Response) => {
 export const deleteProducto = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const exist = prismaInstance.client.product.findUnique({
-      where: { id: Number(id) },
-    });
-
+    const exist = await findUniqueProduct(Number(id));
     if (!exist) {
       res.status(400).json({ msg: 'Product Id does NOT EXIST!' });
       return;
     }
 
-    await prismaInstance.client.product.delete({
+    await productInstance.delete({
       where: {
         id: Number(id),
       },
@@ -102,16 +99,13 @@ export const disableProducto = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const exist = prismaInstance.client.product.findUnique({
-      where: { id: Number(id) },
-    });
-
+    const exist = await findUniqueProduct(Number(id));
     if (!exist) {
       res.status(400).json({ msg: 'Product Id does NOT EXIST!' });
       return;
     }
 
-    const updated = await prismaInstance.client.product.update({
+    const updated = await productInstance.update({
       where: { id: Number(id) },
       data: {
         disabled: true,
@@ -129,11 +123,11 @@ export const getProductosPerPage = async (req: Request, res: Response) => {
     const page = Number(req.query.page) || 1;
     const pageSize = Number(req.query.pageSize) || 5;
 
-    const totalCount = await prismaInstance.client.product.count();
+    const totalCount = await productInstance.count();
     const totalPages = Math.ceil(totalCount / pageSize);
     const offset = (page - 1) * pageSize;
 
-    const data = await prismaInstance.client.product.findMany({
+    const data = await productInstance.findMany({
       take: pageSize,
       skip: offset,
     });
@@ -152,10 +146,7 @@ export const searchByCategory = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const existCategory = await prismaInstance.client.category.findUnique({
-      where: { id: Number(id) },
-    });
-
+    const existCategory = await findUniqueCategory(Number(id));
     if (!existCategory) {
       res.status(400).json({ msg: `Category doensn't exist!` });
       return;
@@ -164,7 +155,7 @@ export const searchByCategory = async (req: Request, res: Response) => {
     const page = Number(req.query.page) || 1;
     const pageSize = Number(req.query.pageSize) || 5;
 
-    const totalCount = await prismaInstance.client.product.count({
+    const totalCount = await productInstance.count({
       where: {
         categoryId: Number(id),
       },
@@ -172,7 +163,7 @@ export const searchByCategory = async (req: Request, res: Response) => {
     const totalPages = Math.ceil(totalCount / pageSize);
     const offset = (page - 1) * pageSize;
 
-    const data = await prismaInstance.client.product.findMany({
+    const data = await productInstance.findMany({
       take: pageSize,
       skip: offset,
       where: {
@@ -194,16 +185,13 @@ export const getProductDetails = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const data = await prismaInstance.client.product.findUnique({
-      where: { id: Number(id) },
-    });
-
+    const data = await findUniqueProduct(Number(id));
     if (!data) {
       res.status(400).json({ msg: 'Product Id does NOT EXIST!' });
       return;
     }
 
-    const imgBelong = await prismaInstance.client.productImage.findMany({
+    const imgBelong = await productImgInstance.findMany({
       where: {
         productId: Number(id),
       },
@@ -218,17 +206,14 @@ export const uploadImages = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const exist = prismaInstance.client.product.findUnique({
-      where: { id: Number(id) },
-    });
-
+    const exist = await findUniqueProduct(Number(id));
     if (!exist) {
       res.status(400).json({ msg: 'Product Id does NOT EXIST!' });
       return;
     }
 
     const url = req.file?.path as string;
-    const newImage = await prismaInstance.client.productImage.create({
+    const newImage = await productImgInstance.create({
       data: {
         url,
         productId: Number(id),
