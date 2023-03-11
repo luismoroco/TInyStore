@@ -11,7 +11,8 @@
     "build": "tsc",
     "dev": "nodemon src/index.ts",
     "deploy": "npx prisma init && npx prisma migrate dev --name production",
-    "test": "jest"
+    "test": "jest",
+    "change": "npx conventional-changelog -i CHANGELOG.md -s -r 0"
   },
   "repository": {
     "type": "git",
