@@ -15,6 +15,8 @@ import {
   searchByCategory,
   uploadImages,
   getProductDetails,
+  buyProducts,
+  sendMail,
 } from '../modules/products/products.controller';
 import { validateToken } from '../utils/validateToken';
 import { authenticateAdmin } from '../modules/products/middleware';
@@ -61,5 +63,9 @@ router.put('/cart/:id', validateToken, authenticateClient, updateItemFromCart);
 router.get('/cart', validateToken, authenticateClient, getMyOwnCarDescription);
 
 router.post('/like/:id', validateToken, authenticateClient, setLike);
+
+router.get('/buy/:id', buyProducts);
+
+router.post('/notify', sendMail);
 
 export default router;

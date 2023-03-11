@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
 import {
+  cartInstance,
   categoryInstance,
   findUniqueCategory,
   findUniqueProduct,
+  orderInstance,
   productImgInstance,
   productInstance,
 } from '../../utils/lib';
+import { sendTheNotify } from '../services/mail';
 
 export const addCategory = async (req: Request, res: Response) => {
   const { body } = req;
@@ -223,4 +226,88 @@ export const uploadImages = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ msg: 'Error in uploadImages' });
   }
+};
+
+export const buyProducts = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const cartItems = await cartInstance.findMany({
+      where: {
+        userId: Number(id),
+      },
+      include: {
+        product: {
+          select: {
+            name: true,
+            price: true,
+            stock: true,
+            disabled: true,
+          },
+        },
+      },
+    });
+
+    if (!cartItems || cartItems.length === 0) {
+      res.status(400).json('Yout cart is EMPTY!');
+      return;
+    }
+
+    const data = [];
+    let total = 0;
+    for (const item of cartItems) {
+      if (
+        item.quantity > item.product.stock &&
+        item.product.disabled === false
+      ) {
+        res
+          .status(400)
+          .json(
+            `There isn't stock for buy ${item.quantity} of ${item.product.name}`
+          );
+        return;
+      }
+      data.push({
+        userId: Number(id),
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.quantity * item.product.price,
+      });
+
+      total += item.product.price * item.quantity;
+    }
+
+    for (const item of cartItems) {
+      await productInstance.update({
+        where: {
+          id: item.productId,
+        },
+        data: {
+          stock: { decrement: item.quantity },
+        },
+      });
+
+      //if (upItem.stock <= 3)
+    }
+
+    await cartInstance.deleteMany({
+      where: {
+        userId: Number(id),
+      },
+    });
+
+    const order = await orderInstance.createMany({
+      data: data,
+      skipDuplicates: true,
+    });
+
+    res.status(200).json({ msg: 'OK', total: `TOTAL: ${total}`, order });
+  } catch (error) {
+    res.status(500).json({ msg: 'Error in buyProducts' });
+  }
+};
+
+export const sendMail = async (_req: Request, res: Response) => {
+  sendTheNotify('lmorocoramos@gmail.com');
+  res.json('TODO GOD');
 };
