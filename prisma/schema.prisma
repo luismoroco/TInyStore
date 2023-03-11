@@ -38,21 +38,21 @@ model Category {
 }
 
 model Product {
-  id          Int            @id @default(autoincrement())
-  name        String
-  description String
-  category    String
-  price       Float
-  stock       Int
-  disabled    Boolean        @default(false)
-  images      ProductImage[]
-  createdBy   User?          @relation(fields: [createdById], references: [id])
-  createdById Int?
-  Order       Order[]
-  Cart        Cart[]
-  Like        Like[]
-  Category    Category?      @relation(fields: [categoryId], references: [id])
-  categoryId  Int?
+  id           Int            @id @default(autoincrement())
+  name         String
+  description  String
+  category     String
+  price        Float
+  stock        Int
+  disabled     Boolean        @default(false)
+  images       ProductImage[]
+  createdBy    User?          @relation(fields: [createdById], references: [id])
+  createdById  Int?
+  Cart         Cart[]
+  Like         Like[]
+  Category     Category?      @relation(fields: [categoryId], references: [id])
+  categoryId   Int?
+  OrderDetails OrderDetails[]
 
   @@map("products")
 }
@@ -66,17 +66,33 @@ model ProductImage {
   @@map("imgproducto")
 }
 
+enum orderState {
+  SENT
+  WALK
+  RECEIVED
+}
+
 model Order {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
+  id        Int            @id @default(autoincrement())
+  user      User           @relation(fields: [userId], references: [id])
   userId    Int
-  product   Product  @relation(fields: [productId], references: [id])
-  productId Int
-  quantity  Int
-  price     Float
-  createdAt DateTime @default(now())
+  total     Float
+  createdAt DateTime       @default(now())
+  details   OrderDetails[]
+  state     orderState     @default(SENT)
 
   @@map("orders")
+}
+
+model OrderDetails {
+  id        Int     @id @default(autoincrement())
+  Order     Order?  @relation(fields: [orderId], references: [id])
+  orderId   Int?
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int
+
+  @@map("details")
 }
 
 model Cart {

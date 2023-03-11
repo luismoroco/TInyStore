@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
+import httpStatus from 'http-status';
 import {
   cartInstance,
   categoryInstance,
   findUniqueCategory,
+  findUniqueOrder,
   findUniqueProduct,
   likeInstance,
   mailInstance,
+  orderDetailInstance,
   orderInstance,
   productImgInstance,
   productInstance,
@@ -20,14 +23,16 @@ export const addCategory = async (req: Request, res: Response) => {
     });
 
     if (!newCategory) {
-      res.status(400).json({ msg: `Category ${body.category} exist!` });
+      res
+        .status(httpStatus.NO_CONTENT)
+        .json({ msg: `Category ${body.category} exist!` });
       return;
     }
 
-    res.status(200).json(newCategory);
+    res.status(httpStatus.CREATED).json(newCategory);
   } catch (error) {
     res
-      .status(400)
+      .status(httpStatus.SERVICE_UNAVAILABLE)
       .json({ msg: 'Error in createCategory or Duplicate category' });
   }
 };
@@ -39,7 +44,9 @@ export const createProducto = async (req: Request, res: Response) => {
   try {
     const existCategory = await findUniqueCategory(Number(id));
     if (!existCategory) {
-      res.status(400).json({ msg: `Category doensn't exist!` });
+      res
+        .status(httpStatus.NO_CONTENT)
+        .json({ msg: `Category doensn't exist!` });
       return;
     }
 
@@ -50,9 +57,11 @@ export const createProducto = async (req: Request, res: Response) => {
       data: { ...body },
     });
 
-    res.status(200).json(newProduct);
+    res.status(httpStatus.CREATED).json(newProduct);
   } catch (error) {
-    res.status(404).json({ msg: 'Error in createProducto Function' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in createProducto Function' });
   }
 };
 
@@ -63,7 +72,9 @@ export const updateProducto = async (req: Request, res: Response) => {
   try {
     const exist = await findUniqueProduct(Number(id));
     if (!exist) {
-      res.status(400).json({ msg: 'The product does not existe' });
+      res
+        .status(httpStatus.NO_CONTENT)
+        .json({ msg: 'The product does not existe' });
       return;
     }
 
@@ -72,9 +83,11 @@ export const updateProducto = async (req: Request, res: Response) => {
       data: { ...body },
     });
 
-    res.status(200).json(updateUser);
+    res.status(httpStatus.OK).json(updateUser);
   } catch (error) {
-    res.status(404).json({ msg: 'Error in updateProducto fx' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in updateProducto fx' });
   }
 };
 
@@ -93,9 +106,11 @@ export const deleteProducto = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json('Product Destroyed');
+    res.status(httpStatus.OK).json('Product Destroyed');
   } catch (error) {
-    res.status(404).json({ msg: 'Error in deleteProducto' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in deleteProducto' });
   }
 };
 
@@ -105,7 +120,9 @@ export const disableProducto = async (req: Request, res: Response) => {
   try {
     const exist = await findUniqueProduct(Number(id));
     if (!exist) {
-      res.status(400).json({ msg: 'Product Id does NOT EXIST!' });
+      res
+        .status(httpStatus.NOT_FOUND)
+        .json({ msg: 'Product Id does NOT EXIST!' });
       return;
     }
 
@@ -116,9 +133,11 @@ export const disableProducto = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(updated);
+    res.status(httpStatus.OK).json(updated);
   } catch (error) {
-    res.status(404).json({ msg: 'Error in disableProducto' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in disableProducto' });
   }
 };
 
@@ -136,13 +155,15 @@ export const getProductosPerPage = async (req: Request, res: Response) => {
       skip: offset,
     });
 
-    res.status(200).json({
+    res.status(httpStatus.OK).json({
       data,
       totalPages,
       currentPage: page,
     });
   } catch (error) {
-    res.status(500).json({ msg: 'Error in getProductos' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in getProductos' });
   }
 };
 
@@ -152,7 +173,9 @@ export const searchByCategory = async (req: Request, res: Response) => {
   try {
     const existCategory = await findUniqueCategory(Number(id));
     if (!existCategory) {
-      res.status(400).json({ msg: `Category doensn't exist!` });
+      res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ msg: `Category doensn't exist!` });
       return;
     }
 
@@ -175,13 +198,15 @@ export const searchByCategory = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json({
+    res.status(httpStatus.OK).json({
       data,
       totalPages,
       currentPage: page,
     });
   } catch (error) {
-    res.status(500).json({ msg: 'Error in searchByCategory' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in searchByCategory' });
   }
 };
 
@@ -191,7 +216,9 @@ export const getProductDetails = async (req: Request, res: Response) => {
   try {
     const data = await findUniqueProduct(Number(id));
     if (!data) {
-      res.status(400).json({ msg: 'Product Id does NOT EXIST!' });
+      res
+        .status(httpStatus.NOT_FOUND)
+        .json({ msg: 'Product Id does NOT EXIST!' });
       return;
     }
 
@@ -200,9 +227,11 @@ export const getProductDetails = async (req: Request, res: Response) => {
         productId: Number(id),
       },
     });
-    res.status(200).json({ data, imgBelong });
+    res.status(httpStatus.OK).json({ data, imgBelong });
   } catch (error) {
-    res.status(500).json({ msg: 'Error in getProductsDetailed' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in getProductsDetailed' });
   }
 };
 
@@ -212,7 +241,9 @@ export const uploadImages = async (req: Request, res: Response) => {
   try {
     const exist = await findUniqueProduct(Number(id));
     if (!exist) {
-      res.status(400).json({ msg: 'Product Id does NOT EXIST!' });
+      res
+        .status(httpStatus.NOT_FOUND)
+        .json({ msg: 'Product Id does NOT EXIST!' });
       return;
     }
 
@@ -223,9 +254,11 @@ export const uploadImages = async (req: Request, res: Response) => {
         productId: Number(id),
       },
     });
-    res.status(200).json(newImage);
+    res.status(httpStatus.CREATED).json(newImage);
   } catch (error) {
-    res.status(500).json({ msg: 'Error in uploadImages' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in uploadImages' });
   }
 };
 
@@ -286,11 +319,10 @@ export const buyProducts = async (req: Request, res: Response) => {
     });
 
     if (!cartItems || cartItems.length === 0) {
-      res.status(400).json('Yout cart is EMPTY!');
+      res.status(httpStatus.NO_CONTENT).json('Yout cart is EMPTY!');
       return;
     }
 
-    const data = [];
     let total = 0;
     for (const item of cartItems) {
       if (
@@ -298,20 +330,32 @@ export const buyProducts = async (req: Request, res: Response) => {
         item.product.disabled === false
       ) {
         res
-          .status(400)
+          .status(httpStatus.NOT_ACCEPTABLE)
           .json(
             `There isn't stock for buy ${item.quantity} of ${item.product.name} OR is disabled`
           );
         return;
       }
-      data.push({
-        userId: Number(id),
-        productId: item.productId,
-        quantity: item.quantity,
-        price: item.quantity * item.product.price,
-      });
 
       total += item.product.price * item.quantity;
+    }
+
+    const data = {
+      userId: Number(id),
+      total: total,
+    };
+
+    const myOrder = await orderInstance.create({
+      data: { ...data },
+    });
+
+    const details = [];
+    for (const item of cartItems) {
+      details.push({
+        orderId: Number(myOrder.id),
+        productId: Number(item.productId),
+        quantity: Number(item.quantity),
+      });
     }
 
     for (const item of cartItems) {
@@ -335,13 +379,56 @@ export const buyProducts = async (req: Request, res: Response) => {
       },
     });
 
-    const order = await orderInstance.createMany({
-      data: data,
+    const order = await orderDetailInstance.createMany({
+      data: details,
       skipDuplicates: true,
     });
 
-    res.status(200).json({ msg: 'OK', total: `TOTAL: ${total}`, order, data });
+    res
+      .status(httpStatus.OK)
+      .json({ msg: 'OK', total: `TOTAL: ${total}`, order, data, details });
   } catch (error) {
-    res.status(500).json({ msg: 'Error in buyProducts' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in buyProducts' });
+  }
+};
+
+export const getAllTheOrders = async (_: Request, res: Response) => {
+  try {
+    const orders = await orderInstance.findMany({
+      include: {
+        details: true,
+      },
+    });
+
+    if (!orders) {
+      res.status(httpStatus.NO_CONTENT).json('The are NOT orders yet!');
+      return;
+    }
+
+    res.status(httpStatus.OK).json(orders);
+  } catch (error) {
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in getAllOrders' });
+  }
+};
+
+export const getMyOrder = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const exist = findUniqueOrder(Number(id));
+    if (!exist) {
+      res
+        .status(httpStatus.NO_CONTENT)
+        .json('The are NOT orders yet or the id NOT exist!');
+      return;
+    }
+  } catch (error) {
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in getMyOrder' });
   }
 };

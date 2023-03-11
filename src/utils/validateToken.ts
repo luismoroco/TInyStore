@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from './tokens';
 import { IPayload } from './interfaces';
+import httpStatus from 'http-status';
 
 export const validateToken = (
   req: Request,
@@ -9,7 +10,7 @@ export const validateToken = (
 ) => {
   const token = req.header('auth-token');
   if (!token) {
-    res.status(401).json(`Access Denied! GET a Token`);
+    res.status(httpStatus.UNAUTHORIZED).json(`Access Denied! GET a Token`);
     return;
   }
 

@@ -3,6 +3,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
+import httpStatus from 'http-status';
 
 export const authenticateClient = (
   req: Request,
@@ -10,7 +11,9 @@ export const authenticateClient = (
   next: NextFunction
 ) => {
   if (req.role === 'MANAGER') {
-    res.status(401).json('Access Denied! ONLY CLIENTES can BUY!');
+    res
+      .status(httpStatus.UNAUTHORIZED)
+      .json('Access Denied! ONLY CLIENTES can BUY!');
     return;
   }
 

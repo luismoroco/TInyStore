@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('MANAGER', 'CLIENT');
 
+-- CreateEnum
+CREATE TYPE "orderState" AS ENUM ('SENT', 'WALK', 'RECEIVED');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
@@ -51,12 +54,21 @@ CREATE TABLE "imgproducto" (
 CREATE TABLE "orders" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
-    "productId" INTEGER NOT NULL,
-    "quantity" INTEGER NOT NULL,
-    "price" DOUBLE PRECISION NOT NULL,
+    "total" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "state" "orderState" NOT NULL DEFAULT 'SENT',
 
     CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "details" (
+    "id" SERIAL NOT NULL,
+    "orderId" INTEGER,
+    "productId" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL,
+
+    CONSTRAINT "details_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -134,7 +146,10 @@ ALTER TABLE "imgproducto" ADD CONSTRAINT "imgproducto_productId_fkey" FOREIGN KE
 ALTER TABLE "orders" ADD CONSTRAINT "orders_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "details" ADD CONSTRAINT "details_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "details" ADD CONSTRAINT "details_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "cart" ADD CONSTRAINT "cart_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

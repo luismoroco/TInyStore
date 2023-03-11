@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import httpStatus from 'http-status';
 import { cartInstance, findUniqueCart } from '../../utils/lib';
 
 export const addProductToCart = async (req: Request, res: Response) => {
@@ -10,9 +11,11 @@ export const addProductToCart = async (req: Request, res: Response) => {
       data: { ...body },
     });
 
-    res.status(200).json(newItem);
+    res.status(httpStatus.CREATED).json(newItem);
   } catch (error) {
-    res.status(500).json({ msg: 'Error in addProductToCart' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in addProductToCart' });
   }
 };
 
@@ -22,7 +25,9 @@ export const deleteItemFromCart = async (req: Request, res: Response) => {
   try {
     const existItem = await findUniqueCart(Number(id));
     if (!existItem) {
-      res.status(400).json({ msg: 'Product Id in cart NOT EXIST!' });
+      res
+        .status(httpStatus.NO_CONTENT)
+        .json({ msg: 'Product Id in cart NOT EXIST!' });
       return;
     }
 
@@ -32,9 +37,11 @@ export const deleteItemFromCart = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json({ msg: 'Item destroyed' });
+    res.status(httpStatus.OK).json({ msg: 'Item destroyed' });
   } catch (error) {
-    res.status(500).json({ msg: 'Error in deleteItemFromCart' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in deleteItemFromCart' });
   }
 };
 
@@ -45,7 +52,9 @@ export const updateItemFromCart = async (req: Request, res: Response) => {
   try {
     const exist = await findUniqueCart(Number(id));
     if (!exist) {
-      res.status(400).json({ msg: 'Product Id in cart NOT EXIST!' });
+      res
+        .status(httpStatus.NO_CONTENT)
+        .json({ msg: 'Product Id in cart NOT EXIST!' });
       return;
     }
 
@@ -54,9 +63,11 @@ export const updateItemFromCart = async (req: Request, res: Response) => {
       data: { ...body },
     });
 
-    res.status(200).json({ msg: 'Item Updated', itemUpdted });
+    res.status(httpStatus.OK).json({ msg: 'Item Updated', itemUpdted });
   } catch (error) {
-    res.status(500).json({ msg: 'Error in deleteItemFromCart' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in deleteItemFromCart' });
   }
 };
 
@@ -70,8 +81,10 @@ export const getMyOwnCarDescription = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(myCart);
+    res.status(httpStatus.OK).json(myCart);
   } catch (error) {
-    res.status(500).json({ msg: 'Error in getMyOwnCarDescription' });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: 'Error in getMyOwnCarDescription' });
   }
 };

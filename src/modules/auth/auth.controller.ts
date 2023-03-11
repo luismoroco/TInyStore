@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { generateToken } from '../../utils/tokens';
 import { findUniqueUser, userInstance } from '../../utils/lib';
 import jwt from 'jsonwebtoken';
+import httpStatus from 'http-status';
 
 export const signUp = async (req: Request, res: Response) => {
   const { body } = req;
@@ -12,9 +13,9 @@ export const signUp = async (req: Request, res: Response) => {
     });
 
     const token: string = generateToken(newUser.id, newUser.role);
-    res.status(200).header('auth-header', token).json(newUser);
+    res.status(httpStatus.CREATED).header('auth-header', token).json(newUser);
   } catch (error) {
-    res.status(404).json({ msg: `Error in SignUp` });
+    res.status(httpStatus.SERVICE_UNAVAILABLE).json({ msg: `Error in SignUp` });
   }
 };
 
@@ -27,19 +28,21 @@ export const signIn = async (req: Request, res: Response) => {
     });
 
     if (!isFound) {
-      res.status(400).json({ msg: `User ${body.email} doesn't exist` });
+      res
+        .status(httpStatus.NO_CONTENT)
+        .json({ msg: `User ${body.email} doesn't exist` });
       return;
     }
 
     if (isFound?.password !== body.password) {
-      res.status(400).json({ msg: `Incorrect passsword` });
+      res.status(httpStatus.FORBIDDEN).json({ msg: `Incorrect passsword` });
       return;
     }
 
     const token: string = generateToken(isFound?.id || 0x6, isFound?.role);
-    res.status(200).header('auth-token', token).json(isFound);
+    res.status(httpStatus.CREATED).header('auth-token', token).json(isFound);
   } catch (error) {
-    res.status(404).json({ msg: `Error in SignIn` });
+    res.status(httpStatus.SERVICE_UNAVAILABLE).json({ msg: `Error in SignIn` });
   }
 };
 
@@ -47,13 +50,17 @@ export const profile = async (req: Request, res: Response) => {
   try {
     const authUser = await findUniqueUser(req.userIdentify);
     if (!authUser) {
-      res.status(400).json(`User not exist!`);
+      res.status(httpStatus.NO_CONTENT).json(`User not exist!`);
       return;
     }
 
-    res.send(`<h1>Welcome To Profile, ${authUser.firstname}<h1>`);
+    res
+      .status(httpStatus.OK)
+      .send(`<h1>Welcome To Profile, ${authUser.firstname}<h1>`);
   } catch (error) {
-    res.status(404).json({ msg: `Error in profile!` });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: `Error in profile!` });
   }
 };
 
@@ -68,12 +75,14 @@ export const signOut = (req: Request, res: Response) => {
       { expiresIn: 1 },
       (isLogout, _error) => {
         if (isLogout) {
-          res.status(200).send({ msg: 'You have been Logout!' });
+          res.status(httpStatus.OK).send({ msg: 'You have been Logout!' });
           return;
         }
       }
     );
   } catch (error) {
-    res.status(404).json({ msg: `Error en signOut!` });
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: `Error en signOut!` });
   }
 };

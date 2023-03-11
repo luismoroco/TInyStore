@@ -13,6 +13,7 @@ export const cartInstance = prismaInstance.client.cart;
 export const orderInstance = prismaInstance.client.order;
 export const likeInstance = prismaInstance.client.like;
 export const mailInstance = prismaInstance.client.email;
+export const orderDetailInstance = prismaInstance.client.orderDetails;
 
 export const findUniqueProduct = async (id: number) => {
   return await productInstance.findUnique({
@@ -34,6 +35,12 @@ export const findUniqueUser = async (id: number) => {
 
 export const findUniqueCart = async (id: number) => {
   return await cartInstance.findUnique({
+    where: { id: id },
+  });
+};
+
+export const findUniqueOrder = async (id: number) => {
+  return await orderInstance.findUnique({
     where: { id: id },
   });
 };
