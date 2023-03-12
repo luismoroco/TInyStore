@@ -7,6 +7,7 @@ This is an online store repository built with PostgreSQL and Prisma as the datab
 proyecto/
 ├── node_modules/
 ├── prisma/
+├── docs/
 ├── src/
 │   ├── index.ts
 │   ├── config/
