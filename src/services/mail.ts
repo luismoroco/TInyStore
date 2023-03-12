@@ -1,6 +1,6 @@
-import { transporter } from '../../config/mailer';
 import schedule from 'node-schedule';
-import { mailInstance } from '../../utils/lib';
+import { transporter } from '../config/mailer';
+import { mailInstance } from '../utils/lib';
 
 export const sendTheNotify = async (_to: string, info: string) => {
   const nodemon = transporter();

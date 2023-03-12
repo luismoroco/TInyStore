@@ -14,6 +14,7 @@ export const orderInstance = prismaInstance.client.order;
 export const likeInstance = prismaInstance.client.like;
 export const mailInstance = prismaInstance.client.email;
 export const orderDetailInstance = prismaInstance.client.orderDetails;
+export const passTokenInstance = prismaInstance.client.passwordResetToken;
 
 export const findUniqueProduct = async (id: number) => {
   return await productInstance.findUnique({

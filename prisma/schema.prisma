@@ -132,7 +132,7 @@ model PasswordResetToken {
   id        Int      @id @default(autoincrement())
   userId    Int
   token     String
-  createdAt DateTime
+  createdAt DateTime @default(now())
   User      User     @relation(fields: [userId], references: [id])
 
   @@map("passtoken")

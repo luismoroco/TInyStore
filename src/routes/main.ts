@@ -4,6 +4,8 @@ import {
   signUp,
   profile,
   signOut,
+  passwordForget,
+  processTheForgetPassword,
 } from '../modules/auth/auth.controller';
 import {
   createProducto,
@@ -19,9 +21,8 @@ import {
   getAllTheOrders,
   getMyOrder,
 } from '../modules/products/products.controller';
-import { validateToken } from '../utils/validateToken';
 import { authenticateAdmin } from '../modules/products/middleware';
-import multer from '../utils/multer.config';
+import multer from '../config/multer';
 import { authenticateClient } from '../modules/cart/middleware';
 import {
   addProductToCart,
@@ -30,11 +31,13 @@ import {
   updateItemFromCart,
 } from '../modules/cart/cart.controller';
 import { setLike } from '../modules/like/like.controller';
+import httpStatus from 'http-status';
+import { validateToken } from '../services/validateToken';
 
 const router: Router = Router();
 
 router.get('/', (_, res) => {
-  res.status(200).send('index');
+  res.status(httpStatus.OK).send('index');
 });
 
 router.post('/signup', signUp);
@@ -67,7 +70,10 @@ router.post('/like/:id', validateToken, authenticateClient, setLike);
 
 router.post('/buy/:id', validateToken, authenticateClient, buyProducts);
 
-router.get('/orders', getAllTheOrders);
-router.get('/orders/:id', getMyOrder);
+router.get('/orders', validateToken, authenticateAdmin, getAllTheOrders);
+router.get('/orders/:id', validateToken, authenticateClient, getMyOrder);
+
+router.post('/recovery', passwordForget);
+router.put('/recovery', processTheForgetPassword);
 
 export default router;

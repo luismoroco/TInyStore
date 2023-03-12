@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from './tokens';
-import { IPayload } from './interfaces';
 import httpStatus from 'http-status';
+import { IPayload } from '../utils/interfaces';
 
 export const validateToken = (
   req: Request,

@@ -107,7 +107,7 @@ CREATE TABLE "passtoken" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "token" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "passtoken_pkey" PRIMARY KEY ("id")
 );

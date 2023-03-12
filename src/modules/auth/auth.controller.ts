@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
-import { generateToken } from '../../utils/tokens';
 import { findUniqueUser, userInstance } from '../../utils/lib';
 import jwt from 'jsonwebtoken';
 import httpStatus from 'http-status';
+import { generateToken, verifyToken } from '../../services/tokens';
+import {
+  passswordRecovery,
+  updatePasswordRecovery,
+} from '../../services/forgot.password';
+import { IPayload } from '../../utils/interfaces';
 
 export const signUp = async (req: Request, res: Response) => {
   const { body } = req;
@@ -84,5 +89,64 @@ export const signOut = (req: Request, res: Response) => {
     res
       .status(httpStatus.SERVICE_UNAVAILABLE)
       .json({ msg: `Error en signOut!` });
+  }
+};
+
+export const passwordForget = async (req: Request, res: Response) => {
+  const { body } = req;
+
+  try {
+    const userExist = await userInstance.findUnique({
+      where: { email: body.email },
+    });
+
+    if (!userExist) {
+      res.status(httpStatus.OK).json('The email NOT EXIST!');
+      return;
+    }
+
+    const process = await passswordRecovery(userExist.id, body.email);
+    if (!process) {
+      res
+        .status(httpStatus.SERVICE_UNAVAILABLE)
+        .json('Error in REQUEST, try it later');
+    }
+    res
+      .status(httpStatus.OK)
+      .json(
+        'Token sent to your EMAIL. Please, GET IT and read the instructions'
+      );
+  } catch (error) {
+    res
+      .status(httpStatus.SERVICE_UNAVAILABLE)
+      .json({ msg: `Error en passwordForget!` });
+  }
+};
+
+export const processTheForgetPassword = async (req: Request, res: Response) => {
+  const { body } = req;
+
+  try {
+    const { role } = verifyToken(body.token) as IPayload;
+    if (role !== body.email) {
+      res
+        .status(httpStatus.OK)
+        .json('Incorrect EMAIL, incorrect or expired TOKEN');
+      return;
+    }
+
+    const process = await updatePasswordRecovery(role, body.newpassword);
+    if (!process) {
+      res
+        .status(httpStatus.SERVICE_UNAVAILABLE)
+        .json('ERROR While trying to UPDATE. Try it later');
+      return;
+    }
+
+    res.status(httpStatus.OK).json('OK, password CHANGUED');
+  } catch (error) {
+    res.status(httpStatus.SERVICE_UNAVAILABLE).json({
+      msg: `Incorrect EMAIL, incorrect or expired TOKEN, Error en processTheForgetPassword!`,
+    });
   }
 };

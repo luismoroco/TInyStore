@@ -1,6 +1,6 @@
 import express, { Application, urlencoded } from 'express';
 import swaggerUi from 'swagger-ui-express';
-import swagger from '../docs/swagger';
+import swagger from '../config/swagger';
 import root from '../routes/main';
 import { json } from 'body-parser';
 import morgan from 'morgan';
