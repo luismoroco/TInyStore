@@ -38,13 +38,14 @@ proyecto/
 ```
 
 # Mail
-Send an email when the user change the password
+Send an email when left <= 3 item only
 
 ![mail](./docs/mail.png)
 
 # Changue Password 
 
 Using MAILTRAP for send emails
+Send an email when the user change the password
 
 ![mail_1](./docs/passwordrecovery.png)
 
