@@ -37,12 +37,14 @@ proyecto/
 └── README.md
 ```
 
-# Mail
+# SCREENSHOTS
+
+## Mail
 Send an email when left <= 3 item only
 
 ![mail](./docs/mail.png)
 
-# Changue Password 
+## Changue Password 
 
 Using MAILTRAP for send emails
 Send an email when the user change the password

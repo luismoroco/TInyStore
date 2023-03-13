@@ -82,3 +82,10 @@ export type TCategory = {
   name?: string;
   description?: string;
 };
+
+export interface IPayload {
+  id: number;
+  role: string;
+  iat: number;
+  exp: number;
+}

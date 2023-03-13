@@ -5,7 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
 
-export const authenticateAdmin = (
+export const authManager = (
   req: Request,
   res: Response,
   next: NextFunction

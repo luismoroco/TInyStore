@@ -5,11 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
 
-export const authenticateClient = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const authClient = (req: Request, res: Response, next: NextFunction) => {
   if (req.role === 'MANAGER') {
     res
       .status(httpStatus.UNAUTHORIZED)
