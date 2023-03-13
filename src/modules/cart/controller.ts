@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { ErrorCart } from '../kernel/error/error.format';
 import { CartService } from './services';
 
 class CartDriver {
@@ -9,6 +10,10 @@ class CartDriver {
     try {
       body.userId = req.userIdentify as number;
       const newItem = await CartService.addProduct(body);
+      if (newItem === ErrorCart) {
+        res.status(httpStatus.OK).json('Bad o duplicate data');
+        return;
+      }
       res.status(httpStatus.CREATED).json(newItem);
     } catch (error) {
       res
@@ -51,6 +56,10 @@ class CartDriver {
         return;
       }
       const itemUpdted = await CartService.updateItem(body, Number(id));
+      if (itemUpdted === ErrorCart) {
+        res.status(httpStatus.OK).json({ msg: 'BAD data!' });
+        return;
+      }
       res.status(httpStatus.OK).json({ msg: 'Item Updated', itemUpdted });
     } catch (error) {
       res

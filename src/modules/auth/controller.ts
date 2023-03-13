@@ -9,6 +9,7 @@ import {
   updatePasswordRecovery,
 } from '../../services/forgot.password';
 import { IPayload } from '../kernel/types/types';
+import { ErroUser } from '../kernel/error/error.format';
 
 class AuthDriver {
   async signUp(req: Request, res: Response) {
@@ -16,7 +17,7 @@ class AuthDriver {
 
     try {
       const newUser = await AuthService.addNewUser(body);
-      if (!newUser) {
+      if (!newUser || newUser === ErroUser) {
         res
           .status(httpStatus.OK)
           .json({ msg: `User ${body.email} or password exist!` });

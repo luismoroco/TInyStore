@@ -1,12 +1,17 @@
 import { Cart } from '@prisma/client';
+import { ErrorCart } from '../kernel/error/error.format';
 import { CarTDAL } from './DAL';
 
 export const CartService = {
   repository: new CarTDAL(),
 
   async addProduct(body: Cart): Promise<Cart> {
-    const data = await this.repository.addItem(body);
-    return data;
+    try {
+      const data = await this.repository.addItem(body);
+      return data;
+    } catch (error) {
+      return ErrorCart;
+    }
   },
 
   async findUnique(key: number): Promise<boolean> {
@@ -20,8 +25,12 @@ export const CartService = {
   },
 
   async updateItem(body: Cart, id: number): Promise<Cart> {
-    const data = await this.repository.updateItem(body, id);
-    return data;
+    try {
+      const data = await this.repository.updateItem(body, id);
+      return data;
+    } catch (error) {
+      return ErrorCart;
+    }
   },
 
   async findManyWhere(key: number): Promise<Cart[]> {

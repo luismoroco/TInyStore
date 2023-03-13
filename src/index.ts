@@ -1,7 +1,7 @@
 import serverSingleton from './patterns/server.Singleton';
 import httpStatus from 'http-status';
 import * as dotenv from 'dotenv';
-//import { initSchedulerForMail } from './modules/services/mail';
+//import { initSchedulerForMail } from './services/mail';
 
 dotenv.config();
 
