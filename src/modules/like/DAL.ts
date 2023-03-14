@@ -1,5 +1,6 @@
 import { Like } from '@prisma/client';
 import { likeInstance } from '../../utils/lib';
+import { ErrorLike } from '../kernel/error/error.format';
 import { IAddItem } from '../kernel/interfaces/interfaces';
 
 export class LikeDAL implements IAddItem<Like> {
@@ -9,10 +10,14 @@ export class LikeDAL implements IAddItem<Like> {
    */
 
   async addItem(x: Like): Promise<Like> {
-    const data = await likeInstance.create({
-      data: { ...x },
-    });
-    return data;
+    try {
+      const data = await likeInstance.create({
+        data: { ...x },
+      });
+      return data;
+    } catch (error) {
+      return ErrorLike;
+    }
   }
 
   async searchTheLastLike(key: number) {

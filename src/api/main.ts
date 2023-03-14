@@ -28,7 +28,7 @@ router.post('/categories', valToken, authManager, categoryDriver.addCategory);
 router.put('/products/:id', valToken, authManager, prodDriver.update);
 router.delete('/products/:id', valToken, authManager, prodDriver.delete);
 router.put('/products/disable/:id', valToken, authManager, prodDriver.disable);
-router.get('/products/category/:id', prodDriver.searchByCategory);
+router.get('/products/category/:id', prodDriver.searchByCategory); //BUG
 router.get('/products/:id', prodDriver.getProductDetails);
 router.post(
   '/products/img/:id',
@@ -36,7 +36,7 @@ router.post(
   authManager,
   multer.single('image'),
   prodDriver.uplImg
-);
+); //BUG
 
 router.get('/products', prodDriver.getProductosPerPage);
 

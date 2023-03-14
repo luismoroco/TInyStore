@@ -20,6 +20,8 @@ export const verifyIfThereLikes = async (
     return;
   }
 
+  console.log('UUUSER', userPutLikeToProduct);
+
   await mailInstance.create({
     data: {
       recipient: userPutLikeToProduct.user.email,
@@ -52,7 +54,7 @@ class ShopController {
         },
       });
 
-      console.log(cartItems);
+      console.log('CART ITEMS', cartItems);
 
       if (!cartItems || cartItems.length === 0) {
         res.status(httpStatus.OK).json('Yout cart is EMPTY!');
@@ -90,6 +92,8 @@ class ShopController {
         });
       }
 
+      console.log(myOrder, details);
+
       for (const item of cartItems) {
         const upItem = await productInstance.update({
           where: {
@@ -101,6 +105,7 @@ class ShopController {
         });
 
         if (upItem.stock <= 3) {
+          console.log(upItem);
           verifyIfThereLikes(upItem.stock, upItem.name, upItem.id);
         }
       }

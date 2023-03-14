@@ -515,7 +515,6 @@
  *          schema:
  *            $ref: '#/components/schemas/Cart'
  *          example:
- *            userId: 1
  *            productId: 1
  *            quantity: 10
  *     responses:
@@ -669,7 +668,7 @@
 
 /**
  * @swagger
- * /cart/buy:
+ * /buy:
  *   put:
  *     summary: BUY from the cart, Request a Token CLIENT
  *     tags: [Cart]

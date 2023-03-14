@@ -118,7 +118,7 @@ class ProductController {
       const existCategory = await ProductService.findUnique(Number(id));
       if (!existCategory) {
         res
-          .status(httpStatus.BAD_REQUEST)
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
           .json({ msg: `Category doensn't exist!` });
         return;
       }
@@ -142,7 +142,7 @@ class ProductController {
 
     try {
       const data = await ProductService.findUnique(Number(id));
-      if (!data) {
+      if (!data || data === ErrorProduct) {
         res
           .status(httpStatus.NOT_FOUND)
           .json({ msg: 'Product Id does NOT EXIST!' });

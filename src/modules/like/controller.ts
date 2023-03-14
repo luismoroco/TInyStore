@@ -13,7 +13,7 @@ class LikeController {
         Number(req.userIdentify),
       ]);
 
-      if (!data || data === ErrorLike) {
+      if (data === ErrorLike) {
         res.status(httpStatus.UNPROCESSABLE_ENTITY).json('The id NOT exist!');
         return;
       }
