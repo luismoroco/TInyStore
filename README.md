@@ -82,5 +82,10 @@ Migrate  Prisma Model
   yarn prisma
 ```
 
+Start server
+```bash
+  yarn start
+```
+
 # Swagger API 
 http://localhost:3000/documentation
