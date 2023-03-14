@@ -14,10 +14,13 @@ export const CartService = {
     }
   },
 
-  async findUnique(key: number): Promise<boolean> {
-    const data = await this.repository.getOne(key);
-    if (data) return true;
-    return false;
+  async findUnique(key: number): Promise<Cart> {
+    try {
+      const data = (await this.repository.getOne(key)) as Cart;
+      return data;
+    } catch (error) {
+      return ErrorCart;
+    }
   },
 
   async deleteItemFromCart(key: number): Promise<void> {

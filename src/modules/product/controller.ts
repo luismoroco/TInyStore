@@ -1,5 +1,8 @@
+import { Category } from '@prisma/client';
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { CategoryService } from '../category/services';
+import { ErrorCategory, ErrorProduct } from '../kernel/error/error.format';
 import { ProductService } from './services';
 
 class ProductController {
@@ -8,9 +11,14 @@ class ProductController {
     const { body } = req;
 
     try {
-      const existCategory = await ProductService.findUnique(Number(id));
-      if (!existCategory) {
-        res.status(httpStatus.OK).json({ msg: `Category doensn't exist!` });
+      const existCategory = (await CategoryService.findCategoryById(
+        Number(id)
+      )) as Category;
+      console.log(existCategory);
+      if (!existCategory || existCategory === ErrorCategory) {
+        res
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
+          .json({ msg: `Category doensn't exist!` });
         return;
       }
 
@@ -18,6 +26,12 @@ class ProductController {
         [req.userIdentify, Number(id), existCategory?.name as string],
         body
       );
+      if (newProduct === ErrorProduct) {
+        res
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
+          .json({ msg: 'Error, BAD data' });
+        return;
+      }
 
       res.status(httpStatus.CREATED).json(newProduct);
     } catch (error) {
@@ -72,13 +86,13 @@ class ProductController {
       const exist = await ProductService.findUnique(Number(id));
       if (!exist) {
         res
-          .status(httpStatus.NOT_FOUND)
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
           .json({ msg: 'Product Id does NOT EXIST!' });
         return;
       }
 
       const updated = await ProductService.setDisable(Number(id));
-      res.status(httpStatus.OK).json(updated);
+      res.status(httpStatus.CREATED).json(updated);
     } catch (error) {
       res
         .status(httpStatus.SERVICE_UNAVAILABLE)
@@ -148,6 +162,7 @@ class ProductController {
     const { id } = req.params;
 
     try {
+      console.log(id);
       const exist = await ProductService.findUnique(Number(id));
       if (!exist) {
         res

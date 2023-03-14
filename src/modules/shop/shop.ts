@@ -31,13 +31,14 @@ export const verifyIfThereLikes = async (
 };
 
 class ShopController {
-  buyProducts = async (req: Request, res: Response) => {
-    const { id } = req.params;
+  async buyProducts(req: Request, res: Response) {
+    console.log('IDDDDD');
+    const id = req.userIdentify;
 
     try {
       const cartItems = await cartInstance.findMany({
         where: {
-          userId: Number(id),
+          userId: id,
         },
         include: {
           product: {
@@ -50,6 +51,8 @@ class ShopController {
           },
         },
       });
+
+      console.log(cartItems);
 
       if (!cartItems || cartItems.length === 0) {
         res.status(httpStatus.OK).json('Yout cart is EMPTY!');
@@ -74,7 +77,7 @@ class ShopController {
       }
 
       const data = {
-        userId: Number(id),
+        userId: id,
         total: total,
       };
       const myOrder = await OrderService.create(data as Order);
@@ -104,7 +107,7 @@ class ShopController {
 
       await cartInstance.deleteMany({
         where: {
-          userId: Number(id),
+          userId: id,
         },
       });
 
@@ -121,7 +124,7 @@ class ShopController {
         .status(httpStatus.SERVICE_UNAVAILABLE)
         .json({ msg: 'Error in buyProducts' });
     }
-  };
+  }
 }
 
 export const shopController = new ShopController();

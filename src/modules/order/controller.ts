@@ -20,14 +20,10 @@ class OrderController {
   }
 
   async getMyOrder(req: Request, res: Response) {
-    const { id } = req.params;
-
     try {
-      const orders = await OrderService.getMyOrder(Number(id));
+      const orders = await OrderService.getMyOrder(req.userIdentify);
       if (!orders || orders.length === 0) {
-        res
-          .status(httpStatus.OK)
-          .json({ msg: 'The are NOT orders yet or the id USER NOT exist!' });
+        res.status(httpStatus.OK).json({ msg: 'The are NOT orders yet' });
         return;
       }
 
@@ -45,9 +41,7 @@ class OrderController {
     try {
       const order = await OrderService.getUnique(Number(id));
       if (!order) {
-        res
-          .status(httpStatus.OK)
-          .json({ msg: 'The are NOT orders yet or the id USER NOT exist!' });
+        res.status(httpStatus.OK).json({ msg: 'The are NOT orders yet!' });
         return;
       }
 
@@ -56,7 +50,7 @@ class OrderController {
     } catch (error) {
       res
         .status(httpStatus.SERVICE_UNAVAILABLE)
-        .json({ msg: 'Error in getMyOrder' });
+        .json({ msg: 'Error in getMyOrderDetailed' });
     }
   }
 }

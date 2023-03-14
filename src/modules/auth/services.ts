@@ -1,17 +1,12 @@
 import { User } from '@prisma/client';
-import { ErroUser } from '../kernel/error/error.format';
 import { AuthDAL } from './DAL';
 
 export const AuthService = {
   repository: new AuthDAL(),
 
   async addNewUser(body: User): Promise<User> {
-    try {
-      const data = this.repository.addItem(body);
-      return data;
-    } catch (error) {
-      return ErroUser;
-    }
+    const data = this.repository.addItem(body);
+    return data;
   },
 
   async findUnique(x: string | number): Promise<User | unknown> {
@@ -20,7 +15,7 @@ export const AuthService = {
       data = await this.repository.getOne(x);
       return data;
     }
-    data = await this.repository.getOneById(1);
+    data = await this.repository.getOneById(x);
     return data;
   },
 

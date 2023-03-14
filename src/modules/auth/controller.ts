@@ -17,10 +17,10 @@ class AuthDriver {
 
     try {
       const newUser = await AuthService.addNewUser(body);
-      if (!newUser || newUser === ErroUser) {
+      if (newUser === ErroUser) {
         res
-          .status(httpStatus.OK)
-          .json({ msg: `User ${body.email} or password exist!` });
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
+          .json({ msg: `User ${body.email} EXIST!, or BAD data` });
         return;
       }
       const token: string = generateToken(newUser.id, newUser.role);
@@ -37,9 +37,9 @@ class AuthDriver {
 
     try {
       const isFound = (await AuthService.findUnique(body.email)) as User;
-      if (!isFound) {
+      if (isFound === ErroUser) {
         res
-          .status(httpStatus.OK)
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
           .json({ msg: `User ${body.email} doesn't exist` });
         return;
       }
@@ -61,7 +61,7 @@ class AuthDriver {
   async profile(req: Request, res: Response) {
     try {
       const authUser = (await AuthService.findUnique(req.userIdentify)) as User;
-      if (!authUser) {
+      if (authUser === ErroUser) {
         res.status(httpStatus.OK).json(`User not exist!`);
         return;
       }
@@ -102,11 +102,16 @@ class AuthDriver {
     const { body } = req;
 
     try {
+      console.log(body);
       const userExist = (await AuthService.findUnique(body.email)) as User;
-      if (!userExist) {
-        res.status(httpStatus.OK).json('The email NOT EXIST!');
+      if (!userExist || userExist === ErroUser) {
+        res
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
+          .json('The email NOT EXIST!');
         return;
       }
+
+      console.log(userExist);
 
       const process = await passswordRecovery(userExist.id, body.email);
       if (!process) {
@@ -131,10 +136,11 @@ class AuthDriver {
     const { body } = req;
 
     try {
-      const { role } = verifyToken(body.token) as IPayload;
+      const authToken = req.headers['auth-token'] as string;
+      const { role } = verifyToken(authToken) as IPayload;
       if (role !== body.email) {
         res
-          .status(httpStatus.OK)
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
           .json('Incorrect EMAIL, incorrect or expired TOKEN');
         return;
       }

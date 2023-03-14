@@ -14,7 +14,7 @@ export const passswordRecovery = async (
   await passTokenInstance.create({
     data: { userId: id, token: token },
   });
-
+  console.log('The emaaaail', email);
   try {
     sendTheNotify(
       email,

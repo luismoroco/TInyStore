@@ -1,5 +1,6 @@
 import { Cart } from '@prisma/client';
 import { cartInstance } from '../../utils/lib';
+import { ErrorCart } from '../kernel/error/error.format';
 import {
   IAddItem,
   IDeleteOne,
@@ -20,8 +21,12 @@ export class CarTDAL
    */
 
   async getOne(id: number): Promise<Cart | unknown> {
-    const data = await cartInstance.findUnique({ where: { id: id } });
-    return data;
+    try {
+      const data = await cartInstance.findUnique({ where: { id: id } });
+      return data;
+    } catch (error) {
+      return ErrorCart;
+    }
   }
 
   /**

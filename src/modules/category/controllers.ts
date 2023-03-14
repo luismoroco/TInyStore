@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { ErrorCategory } from '../kernel/error/error.format';
 import { CategoryService } from './services';
 
 class CategoryDriver {
@@ -8,10 +9,10 @@ class CategoryDriver {
 
     try {
       const newCategory = await CategoryService.addCategory(body);
-      if (!newCategory) {
+      if (!newCategory || newCategory === ErrorCategory) {
         res
-          .status(httpStatus.OK)
-          .json({ msg: `Category ${body.category} exist or BAD values!` });
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
+          .json({ msg: `Category ${body.name} exist or BAD values!` });
         return;
       }
 

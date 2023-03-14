@@ -11,7 +11,9 @@ class CartDriver {
       body.userId = req.userIdentify as number;
       const newItem = await CartService.addProduct(body);
       if (newItem === ErrorCart) {
-        res.status(httpStatus.OK).json('Bad o duplicate data');
+        res
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
+          .json('Bad o duplicate data');
         return;
       }
       res.status(httpStatus.CREATED).json(newItem);
@@ -27,10 +29,10 @@ class CartDriver {
 
     try {
       const existItem = await CartService.findUnique(Number(id));
-      if (!existItem) {
+      if (!existItem || existItem === ErrorCart) {
         res
-          .status(httpStatus.OK)
-          .json({ msg: 'Product Id in cart NOT EXIST!' });
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
+          .json({ msg: 'Product Id in cart NOT EXIST!!!' });
         return;
       }
 
@@ -49,15 +51,15 @@ class CartDriver {
 
     try {
       const exist = await CartService.findUnique(Number(id));
-      if (!exist) {
+      if (!exist || exist === ErrorCart) {
         res
-          .status(httpStatus.OK)
-          .json({ msg: 'Product Id in cart NOT EXIST!' });
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
+          .json({ msg: 'Product Id in cart NOT EXIST!!!' });
         return;
       }
       const itemUpdted = await CartService.updateItem(body, Number(id));
       if (itemUpdted === ErrorCart) {
-        res.status(httpStatus.OK).json({ msg: 'BAD data!' });
+        res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ msg: 'BAD data!' });
         return;
       }
       res.status(httpStatus.OK).json({ msg: 'Item Updated', itemUpdted });

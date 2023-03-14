@@ -8,48 +8,17 @@ const swaggerDefinition: OAS3Definition = {
   },
   servers: [
     {
-      url: 'http:localhost:3000',
+      url: 'http://localhost:3000',
     },
   ],
+  host: 'localhost:3000',
   components: {
     securitySchemes: {
       bearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-    },
-    schemas: {
-      user: {
-        type: 'object',
-        required: [
-          'firstname',
-          'lastname',
-          'username',
-          'email',
-          'password',
-          'role',
-        ],
-        properties: {
-          firstname: {
-            type: 'string',
-          },
-          lastname: {
-            type: 'string',
-          },
-          username: {
-            type: 'string',
-          },
-          email: {
-            type: 'string',
-          },
-          password: {
-            type: 'string',
-          },
-          role: {
-            type: 'string',
-          },
-        },
+        type: 'apiKey',
+        scheme: 'auth-token',
+        name: 'auth-token',
+        in: 'header',
       },
     },
   },
@@ -57,7 +26,7 @@ const swaggerDefinition: OAS3Definition = {
 
 const swaggerOptions: OAS3Options = {
   swaggerDefinition,
-  apis: ['./src/routes/*.ts'],
+  apis: ['./src/api/*.ts'],
 };
 
 export default swaggerJSDoc(swaggerOptions);

@@ -1,5 +1,6 @@
 import { Product, ProductImage } from '@prisma/client';
 import { productImgInstance, productInstance } from '../../utils/lib';
+import { ErrorProduct } from '../kernel/error/error.format';
 import {
   IAddItem,
   IDeleteOne,
@@ -20,10 +21,14 @@ export class ProductDAL
    */
 
   async addItem(x: Product): Promise<Product> {
-    const data = await productInstance.create({
-      data: { ...x },
-    });
-    return data;
+    try {
+      const data = await productInstance.create({
+        data: { ...x },
+      });
+      return data;
+    } catch (error) {
+      return ErrorProduct;
+    }
   }
 
   /**
@@ -32,10 +37,14 @@ export class ProductDAL
    */
 
   async getOne(x: number): Promise<Product | unknown> {
-    const data = await productInstance.findUnique({
-      where: { id: x },
-    });
-    return data;
+    try {
+      const data = await productInstance.findUnique({
+        where: { id: x },
+      });
+      return data;
+    } catch (error) {
+      return ErrorProduct;
+    }
   }
 
   /**

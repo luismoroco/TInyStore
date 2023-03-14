@@ -1,5 +1,6 @@
 import { Category } from '@prisma/client';
 import { categoryInstance } from '../../utils/lib';
+import { ErrorCategory } from '../kernel/error/error.format';
 import { IAddItem, IGetOne } from '../kernel/interfaces/interfaces';
 
 export class CategoryDAL
@@ -11,10 +12,14 @@ export class CategoryDAL
    */
 
   async addItem(x: Category): Promise<Category> {
-    const data = await categoryInstance.create({
-      data: { ...x },
-    });
-    return data;
+    try {
+      const data = await categoryInstance.create({
+        data: { ...x },
+      });
+      return data;
+    } catch (error) {
+      return ErrorCategory;
+    }
   }
 
   /**
@@ -23,9 +28,13 @@ export class CategoryDAL
    */
 
   async getOne(x: number): Promise<Category | unknown> {
-    const data = await categoryInstance.findUnique({
-      where: { id: x },
-    });
-    return data;
+    try {
+      const data = await categoryInstance.findUnique({
+        where: { id: x },
+      });
+      return data;
+    } catch (error) {
+      return ErrorCategory;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { User } from '@prisma/client';
 import { userInstance } from '../../utils/lib';
+import { ErroUser } from '../kernel/error/error.format';
 import { IAddItem, IGetOne } from '../kernel/interfaces/interfaces';
 
 export class AuthDAL implements IAddItem<User>, IGetOne<User, string> {
@@ -9,10 +10,14 @@ export class AuthDAL implements IAddItem<User>, IGetOne<User, string> {
    */
 
   async addItem(x: User): Promise<User> {
-    const data = await userInstance.create({
-      data: { ...x },
-    });
-    return data;
+    try {
+      const data = await userInstance.create({
+        data: { ...x },
+      });
+      return data;
+    } catch (err) {
+      return ErroUser;
+    }
   }
 
   /**
@@ -21,10 +26,14 @@ export class AuthDAL implements IAddItem<User>, IGetOne<User, string> {
    */
 
   async getOne(x: string): Promise<User | unknown> {
-    const data = await userInstance.findUnique({
-      where: { email: x },
-    });
-    return data;
+    try {
+      const data = await userInstance.findUnique({
+        where: { email: x },
+      });
+      return data;
+    } catch (error) {
+      return ErroUser;
+    }
   }
 
   /**
@@ -33,9 +42,13 @@ export class AuthDAL implements IAddItem<User>, IGetOne<User, string> {
    */
 
   async getOneById(x: number): Promise<User | unknown> {
-    const data = await userInstance.findUnique({
-      where: { id: x },
-    });
-    return data;
+    try {
+      const data = await userInstance.findUnique({
+        where: { id: x },
+      });
+      return data;
+    } catch (error) {
+      return ErroUser;
+    }
   }
 }
