@@ -68,7 +68,7 @@ Send an email when the user change the password
 
 Clone repository
 ```bash
-  git clone https://github.com/luismoroco/Ravn-Challenge-V2-LuisAngelMoroco.git
+  git clone https://github.com/luismoroco/TInyStore.git
 ```
 init Postgress image
 ```bash
